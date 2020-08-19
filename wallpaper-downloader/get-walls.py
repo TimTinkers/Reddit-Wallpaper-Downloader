@@ -110,8 +110,8 @@ def alreadyDownloaded(URL):
 
 # Downloads our image and Returns true if stored locally.
 @timeout(time_limit)
-def storeImg(URL):
-    if urllib.request.urlretrieve(URL, os.path.join(directory, os.path.basename(URL))):
+def storeImg(URL, filename):
+    if urllib.request.urlretrieve(URL, filename):
         return True
     else: return False
 
@@ -151,15 +151,17 @@ for post in posts:
         continue
 
     else:
+        filename = os.path.join(directory, os.path.basename(post))
         try:
-            if storeImg(post):
+            if storeImg(post, filename):
                 print(GREEN + '* {}) downloaded {}!'.format(index, os.path.basename(post)) + NC)
                 downloadCount += 1
                 index += 1
             else:
-                print(RED + '* unexcepted error with image download.' + NC)
+                print(RED + '* unexcepted error with {} download.'.format(filename) + NC)
                 index += 1
         except:
             print(RED + '* {}) skipping an image which took too long to download.'.format(index) + NC)
+            os.remove(filename)
             index += 1
-print(ORANGE + '* {}'.format(downloadCount) + PURPLE + ' images were downloaded to ' + ORANGE + '{}' + PURPLE + '.'.format(directory) + NC)
+print(ORANGE + '* {}'.format(downloadCount) + PURPLE + ' images were downloaded to ' + ORANGE + '{}'.format(directory) + PURPLE + '.' + NC)
